@@ -148,7 +148,6 @@ class MatrixVisualizer {
 
     initLines() {
         this.cols = Math.floor(this.canvas.width / 30);
-        console.log(this.cols);
         this.rows = Math.floor(this.canvas.height / 30);
         this.cellWidth = this.canvas.width / this.cols;
         this.cellHeight = this.canvas.height / this.rows;
@@ -205,7 +204,6 @@ class MatrixVisualizer {
 
                 let v = Util.exp(t);
                 this.chaosAmount = parseFloat(v);
-                console.log(this.chaosAmount);
 
                 caosableList.forEach(caosable => {
                     let rotate = Util.mapRange(v*Util.random(-1,1), -1,1,-10,10);
@@ -234,7 +232,6 @@ class MatrixVisualizer {
                 y,
                 start: performance.now()
             });
-            console.log(this.waves);
         });
     }
 
@@ -269,7 +266,6 @@ class MatrixVisualizer {
 
     // ------ pattern ------
     applyPattern(name) {
-        console.log(name);
         this.currentPatternName = name;
         if (name === "vertical") {
             this.applyVerticalPattern();
@@ -422,8 +418,6 @@ class MatrixVisualizer {
         drawWord(word2, startRow2, startCol2);
     }
 
-
-    // ----------------- Effetti: mouse + onde -----------------
     applyMouseInfluence() {
         if(this.mouseX == 0 && this.mouseY == 0){
             return;
@@ -466,7 +460,6 @@ class MatrixVisualizer {
         }
     }
 
-
     applyWaves(now) {
         // ripulisci onde vecchie
         for (let i = this.waves.length - 1; i >= 0; i--) {
@@ -501,6 +494,9 @@ class MatrixVisualizer {
     }
 
     updateLine(line) {
+        line.angle += (line.targetAngle - line.angle) * 0.1;
+        line.color = this.lerpColor(line.color, line.targetColor, 0.1);
+
         const chaos = this.chaosAmount;
         const baseAngle = line.baseAngle;
         const randomAngle = line.randomAngle;
@@ -514,9 +510,6 @@ class MatrixVisualizer {
         let color = line.baseColor;
         line.targetAngle = angle;
         line.targetColor = color;
-
-        line.angle += (line.targetAngle - line.angle) * 0.1;
-        line.color = this.lerpColor(line.color, line.targetColor, 0.1);
     }
 
     drawLine(line) {

@@ -136,6 +136,7 @@ svg{
     align-items: center;
     font-size: 1.4rem;
     min-height: 100vh;
+    pointer-events: none;
 
     .container{
         z-index: 10;
@@ -211,6 +212,10 @@ svg{
     &.section-footer{
         margin-top: 32px;
         padding: 40px 80px;
+
+        .section-title{
+            margin-bottom: 0;
+        }
     }
 }
 
@@ -281,6 +286,7 @@ em{
     right: 0;
     margin: 0 auto;
     z-index: 1000;
+    box-shadow: 0 0 16px #8075ff3f;
 
     .slider-label {
         display: block;
