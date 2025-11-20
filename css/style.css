@@ -1,0 +1,394 @@
+:root {
+    --white: #fff;
+    --black: #211A1D;
+    --olive: #CAD5CA;
+    --light-olive: #d4e0d4;
+    --violet: #8075ff;
+
+    --cubicBezier: cubic-bezier(1.000, 0.000, 0.000, 1.000);
+}
+
+/* space-grotesk-300 - latin */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 300;
+  src: url('../fonts/space-grotesk-v22-latin-300.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+/* space-grotesk-regular - latin */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../fonts/space-grotesk-v22-latin-regular.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+/* space-grotesk-500 - latin */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 500;
+  src: url('../fonts/space-grotesk-v22-latin-500.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+/* space-grotesk-600 - latin */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 600;
+  src: url('../fonts/space-grotesk-v22-latin-600.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+/* space-grotesk-700 - latin */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 700;
+  src: url('../fonts/space-grotesk-v22-latin-700.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+
+*,*:before,*:after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+    line-height: 1.2em;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	scroll-behavior: smooth;
+    font-size: 20px;
+}
+
+body {
+    font-family: 'Space Grotesk', sans-serif;
+    background-color: var(--olive);
+    width: 100%;
+    overflow-x: hidden;
+}
+
+h1,h2,h3,h4,p,ul,ol {
+	display: block;
+	font-size: inherit;
+}
+
+a {
+    color: var(--violet);
+    font-weight: bold;
+}
+
+ul{
+    list-style-type: none;
+
+    &.list{
+        list-style-type:disc;
+        margin: 16px 0;
+
+        li{
+            margin-left: 16px;
+        }
+    }
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+	border: 0;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+[disabled] {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+svg{
+    font-size: 49px;
+    stroke: #8075ff;
+    stroke-width: 0.1em;
+    stroke-linecap: square;
+    stroke-linejoin: bevel;
+    opacity: undefined;
+    fill: transparent;
+}
+
+.k{
+    will-change: transform;
+    position: relative;
+    display: inline-block;
+    transition: 0.3s;
+    transition-delay: 0.1s;
+
+}
+
+.section{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.4rem;
+    min-height: 100vh;
+
+    .container{
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 36px 52px;
+
+        border-radius: 40px;
+
+        span, em{
+            background-color: var(--olive);
+        }
+    }
+
+    .section-title{
+        font-weight: bold;
+        margin-top: 40px;
+        margin-bottom: 16px;
+        background-color: var(--olive);
+        align-self: flex-start;
+    }
+
+    &.section-home{
+        font-size: 3rem;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 80px;
+        gap: 32px;
+        z-index: 10;
+        position: relative;
+        pointer-events: none;
+
+        img{
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 80px;
+        }
+
+        .text{
+            max-width: 1200px;
+
+            .text-sign{
+                display: flex;
+                align-items: center;
+                justify-self: flex-end;
+                text-align: right;
+                font-style: italic;
+                font-size: 1.6rem;
+                gap: 8px;
+                margin-top: 24px;
+
+                img{
+                    height: 1.6em;
+                    width: 1.6em;
+                }
+            }
+        }
+    }
+
+    &.section-text{
+        p{
+            max-width: 1200px;
+        }
+    }
+
+    &.section-portfolio{
+        margin-top: 32px;
+    }
+
+    &.section-footer{
+        margin-top: 32px;
+        padding: 40px 80px;
+    }
+}
+
+.btn {
+    background-color: transparent;
+    color: var(--white);
+    border: 1px solid var(--white);
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 32px;
+    border-radius: 24px;
+    cursor: pointer;
+    transition: .3s;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-family: 'Karla', sans-serif;
+    font-size: 1rem;
+
+    svg{
+        margin-left: 16px;
+        height: 32px;
+        width: 32px;
+    }
+
+    &:hover {
+        background-color: var(--white);
+        color: var(--black);
+        letter-spacing: 2px;
+    }
+
+    &+.btn {
+        margin-left: 6px;
+    }
+
+    &.btn-important {
+        background-color: var(--white);
+        color: var(--black);
+    }
+}
+
+h1{
+    background-color: #8075ff;
+    color: var(--white);
+    padding: 16px 40px;
+}
+
+em{
+    /*text-decoration: underline;*/
+    color: #8075ff;
+    font-weight: bold;
+}
+
+.slider-wrap {
+    width: 300px;
+    margin: 20px 0;
+    font-size: 1em;
+    color: #444;
+    background:linear-gradient(45deg, var(--violet), var(--olive));
+    color: var(--light-olive);
+    border: 1px solid var(--light-olive);
+    padding: 12px 32px 20px;
+    border-radius: 40px;
+    font-size: 1rem;
+    position: fixed;
+    bottom: 32px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    z-index: 1000;
+
+    .slider-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        font-size: .8rem;
+    }
+
+    .slider-track {
+        position: relative;
+        width: 100%;
+        height: 8px;
+        border-radius: 10px;
+        background-color:var(--light-olive);
+    }
+
+    .slider-track input[type="range"] {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 8px;
+        background: transparent;
+        position: absolute;
+        top: 0;
+        left: 0;
+        margin: 0;
+        cursor: pointer;
+        z-index: 2;
+    }
+
+    .slider-track input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 24px;
+        height: 24px;
+        background: var(--violet);
+        border-radius: 50%;
+        border: 1px solid var(--light-olive);
+        box-shadow: 0 0 8px rgba(128, 117, 255, 0.4);
+        background-size: cover;
+    }
+
+    .slider-fill {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 8px;
+        background: var(--violet);
+        border-radius: 10px;
+        z-index: 1;
+    }
+}
+
+
+.container {
+    max-width: 1200px;
+    width: 100%;
+}
+
+
+.canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 120%;
+    display: block;
+    background: #CAD5CA;
+    margin-bottom: 20px;
+    z-index: 0;
+}
+
+@media (max-width:1024px){
+    .section {
+        &.section-home{
+            font-size: 2rem;
+
+            .text {
+                .text-sign{
+                    font-size: 1.2rem;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width:768px){
+    .section{
+        &.section-home{
+            padding: 32px 24px;
+        }
+    }
+}
+
+@media (max-width:425px){
+    .section{
+        font-size: 1.2rem;
+
+        .container{
+            padding: 24px 40px;
+        }
+        &.section-home{
+            padding: 24px 24px;
+            font-size: 1.6rem;
+
+            .container{
+                padding: 24px;
+            }
+        }
+    }
+}
