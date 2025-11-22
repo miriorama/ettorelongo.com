@@ -126,13 +126,21 @@ class Ui {
         this.chaosAmount = 0;       // 0 verticali, 1 casuali
         this.currentPatternName = "vertical";
         this.lastPatternApplied = "";
+        this.lastWindowWidth = window.innerWidth;
 
         // sezioni per scroll-pattern
         this.sections = Array.from(document.querySelectorAll('.section'));
 
         // setup
         this.resizeCanvas();
-        window.addEventListener('resize', () => this.resizeCanvas());
+        window.addEventListener('resize', () => {
+            const newWidth = window.innerWidth;
+            if (newWidth === this.lastWindowWidth) return;
+            this.lastWindowWidth = newWidth;
+            this.resizeCanvas();
+        });
+        this.bindEvent
+
         this.bindEvents();
         this.applyVerticalPattern();
         this.animate();
