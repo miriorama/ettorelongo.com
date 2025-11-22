@@ -210,8 +210,7 @@ class Ui {
         window.addEventListener('touchstart', (e) => {
             const touch = e.touches && e.touches[0];
             addWave(touch?.clientX, touch?.clientY);
-            e.preventDefault();
-        }, { passive: false });
+        });
     }
 
     onScroll() {
