@@ -2,56 +2,22 @@ class Util{
     static mapRange(x, inMin, inMax, outMin, outMax) {
         return outMin + ( (x - inMin) * (outMax - outMin) ) / (inMax - inMin);
     }
+    static mapToDeg(v) {
+        return Math.max(-1, Math.min(1, v)) * 45;
+    }
     static exp(x, k=3) {
         return Math.pow(x, k);
     }
     static random(min=0, max=1) {
         return Math.random() * (max - min) + min;
     }
-}
 
-class MatrixVisualizer {
-    constructor(canvas) {
-        this.canvas = canvas;
-        this.ctx = canvas.getContext('2d');
-
-        // griglia
-        this.cols = 0;
-        this.rows = 0;
-        this.cellWidth = 0;
-        this.cellHeight = 0;
-        this.lineLength = 0;
-        this.lines = [];
-
-        this.waves = []; // {x, y, start}
-
-        // onde
-        this.waveSpeed = 800;      // px/s
-        this.waveThickness = 100;   // px
-        this.waveLifetime = 8000;  // ms
-
-        // input
-        this.mouseX = 0;
-        this.mouseY = 0;
-        this.hasMouse = false;
-
-        // chaos & pattern
-        this.chaosAmount = 0.5;       // 0 verticali, 1 casuali
-        this.currentPatternName = "vertical";
-
-        // sezioni per scroll-pattern
-        this.sections = Array.from(document.querySelectorAll('.section'));
-
-        // setup
-        this.resizeCanvas();
-        window.addEventListener('resize', () => this.resizeCanvas());
-        this.bindEvents();
-        this.applyVerticalPattern();
-        this.animate();
+    static mapToHex(v) {
+    const n = Math.round(v * 255);
+    return n.toString(16).padStart(2, '0');
     }
 
-    // ------ util colori ------
-    hslToHex(h, s, l, a = 1) {
+    static hslToHex(h, s, l, a = 1) {
         // normalizza
         s /= 100;
         l /= 100;
@@ -80,16 +46,7 @@ class MatrixVisualizer {
         return `#${hex(r)}${hex(g)}${hex(b)}${hex(alpha)}`;
     }
 
-    hexToRgb(hex) {
-        const match = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        return match ? {
-            r: parseInt(match[1], 16),
-            g: parseInt(match[2], 16),
-            b: parseInt(match[3], 16)
-        } : { r: 255, g: 255, b: 255 };
-    }
-
-    hexToRgba(hex) {
+    static hexToRgba(hex) {
         hex = hex.replace('#', '').trim();
 
         // formati corti tipo #RGB o #RGBA → espansione
@@ -116,27 +73,73 @@ class MatrixVisualizer {
         return { r, g, b, a };
     }
 
-    rgbToHex(r, g, b) {
-        return "#" + ((1 << 24) + (r << 16) + (g << 8) + b)
-            .toString(16)
-            .slice(1);
-    }
-
-    rgbaToHex(r, g, b, a = 255) {
+    static rgbaToHex(r, g, b, a = 255) {
         const toHex = v => v.toString(16).padStart(2, '0');
         return "#" + toHex(r) + toHex(g) + toHex(b) + toHex(a);
     }
 
-    lerpColor(c1, c2, t=1) {
-        const a = this.hexToRgba(c1);
-        const b = this.hexToRgba(c2);
+    static lerpColor(c1, c2, t=1) {
+        const a = Util.hexToRgba(c1);
+        const b = Util.hexToRgba(c2);
 
         const r = Math.round(a.r + (b.r - a.r) * t);
         const g = Math.round(a.g + (b.g - a.g) * t);
         const b2 = Math.round(a.b + (b.b - a.b) * t);
         const alpha = Math.round(a.a + (b.a - a.a) * t);
 
-        return this.rgbaToHex(r, g, b2, alpha);
+        return Util.rgbaToHex(r, g, b2, alpha);
+    }
+}
+
+class Ui {
+    constructor(canvas) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
+
+        // griglia
+        this.cols = 0;
+        this.rows = 0;
+        this.cellWidth = 0;
+        this.cellHeight = 0;
+        this.lineLength = 0;
+        this.lines = [];
+
+        this.waves = []; // {x, y, start}
+
+        //this.backgroundColor = '#CAD5CA';
+        //this.lightColor = "#d3e0d3";
+        //this.accentColor = "#8075ff";
+
+        this.backgroundColor = '#675867';
+        this.lightColor = "#949194";
+        this.accentColor = "#CAD5CA";
+
+        // onde
+        this.waveSpeed = 800;      // px/s
+        this.waveThickness = 100;   // px
+        this.waveLifetime = 8000;  // ms
+
+        // input
+        this.mouseX = 0;
+        this.mouseY = 0;
+        this.hasMouse = false;
+
+        this.debug = document.querySelector('.debug');
+
+        // chaos & pattern
+        this.chaosAmount = 0;       // 0 verticali, 1 casuali
+        this.currentPatternName = "vertical";
+        this.lastPatternApplied = "vertical";
+
+        // sezioni per scroll-pattern
+        this.sections = Array.from(document.querySelectorAll('.section'));
+
+        // setup
+        this.resizeCanvas();
+        window.addEventListener('resize', () => this.resizeCanvas());
+        this.bindEvents();
+        this.applyVerticalPattern();
+        this.animate();
     }
 
     // ------ griglia ------
@@ -167,11 +170,11 @@ class MatrixVisualizer {
                     angle: 0,
                     targetAngle: 0,
                     baseAngle: Math.PI / 2,           // verticale
-                    randomAngle: Math.random() * Math.PI * 2,
+                    randomAngle: (Math.random() * (90 * Math.PI / 180)),
                     // colori
-                    color: "#d3e0d3",
-                    targetColor: "#d3e0d3",
-                    baseColor: "#d3e0d3"
+                    color: this.backgroundColor,
+                    targetColor: this.backgroundColor,
+                    baseColor: this.backgroundColor
                 });
             }
         }
@@ -180,50 +183,22 @@ class MatrixVisualizer {
     // ------ eventi ------
     bindEvents() {
         // mouse
-        this.canvas.addEventListener('mousemove', (e) => {
+        window.addEventListener('mousemove', (e) => {
             const rect = this.canvas.getBoundingClientRect();
             this.mouseX = e.clientX - rect.left;
             this.mouseY = e.clientY - rect.top;
             this.hasMouse = true;
         });
 
-        this.canvas.addEventListener('mouseleave', () => {
+        window.addEventListener('mouseleave', () => {
             this.hasMouse = false;
         });
-
-        // slider
-        const slider = document.getElementById('chaosSlider');
-        const fill = document.getElementById('chaosFill');
-        //const label = document.getElementById('chaosValue');
-
-        if (slider && fill) {
-            let caosableList = document.querySelectorAll('.k')
-            const updateSliderUI = () => {
-                const t = slider.value / slider.max;     // normalizzato 0 → 1
-                fill.style.width = (t * 100) + "%";
-
-                let v = Util.exp(t);
-                this.chaosAmount = parseFloat(v);
-
-                caosableList.forEach(caosable => {
-                    let rotate = Util.mapRange(v*Util.random(-1,1), -1,1,-10,10);
-                    let scaleX = Util.mapRange(v*Util.random(-1,1), -1,1,0.5,1.5);
-                    let scaleY = Util.mapRange(v*Util.random(-1,1), -1,1,0.5,1.5);
-                    let scaleZ = Util.mapRange(v*Util.random(-1,1), -1,1,0.5,1.5);
-
-                    caosable.style.transform = `rotate(${rotate}deg) scaleZ(${scaleZ}) scaleX(${scaleX}) scaleY(${scaleY})`;
-                    //caosable.style.letterSpacing = Util.mapRange(t*Math.random(), 0,1,-10,2) + 'px';
-                });
-            };
-            updateSliderUI();
-            slider.addEventListener('input', updateSliderUI);
-        }
 
         // scroll: pattern + parallasse
         window.addEventListener('scroll', () => this.onScroll());
         this.onScroll();
 
-        this.canvas.addEventListener('click', (e) => {
+        window.addEventListener('click', (e) => {
             const rect = this.canvas.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
@@ -239,7 +214,10 @@ class MatrixVisualizer {
         // parallasse: canvas si sposta leggermente verso l'alto
         const factor = 0.01;
         const offset = window.scrollY * -factor;
-        this.canvas.style.transform = `translateY(${offset}px)`;
+        const maxScroll = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
+        const scrollProgress = Math.min(1, Math.max(0, window.scrollY / maxScroll));
+        const rotate = scrollProgress * 2; // 0 → 15deg verso fine scroll
+        this.canvas.style.transform = `translateY(${offset}px) rotate(${rotate}deg)`;
 
         // pattern in base alla sezione "centrale"
         const viewportCenter = window.innerHeight / 2;
@@ -266,6 +244,7 @@ class MatrixVisualizer {
 
     // ------ pattern ------
     applyPattern(name) {
+        this.applyVerticalPattern();
         this.currentPatternName = name;
         if (name === "vertical") {
             this.applyVerticalPattern();
@@ -273,61 +252,29 @@ class MatrixVisualizer {
             this.applyWavePattern();
         } else if (name === "spiral") {
             this.applySpiralPattern();
-        } else if (name === "longo") {
-            this.applyLongoPattern();
         }
     }
 
-    getLetterMap() {
-        return {
-            'A': [[0,1,1,0],[1,0,0,1],[1,1,1,1],[1,0,0,1],[1,0,0,1]],
-            'B': [[1,1,1,0],[1,0,0,1],[1,1,1,0],[1,0,0,1],[1,1,1,0]],
-            'C': [[0,1,1,1,0],[1,0,0,0,1],[1,0,0,0,0],[1,0,0,0,1],[0,1,1,1,0]],
-            'D': [[1,1,1,0],[1,0,0,1],[1,0,0,1],[1,0,0,1],[1,1,1,0]],
-            'E': [[1,1,1,1],[1,0,0,0],[1,1,1,0],[1,0,0,0],[1,1,1,1]],
-            'F': [[1,1,1,1],[1,0,0,0],[1,1,1,0],[1,0,0,0],[1,0,0,0]],
-            'G': [[0,1,1,1,0],[1,0,0,0,1],[1,0,0,0,0],[1,0,1,1,1],[0,1,1,1,1]],
-            'H': [[1,0,0,1],[1,0,0,1],[1,1,1,1],[1,0,0,1],[1,0,0,1]],
-            'I': [[1,1,1],[0,1,0],[0,1,0],[0,1,0],[1,1,1]],
-            'J': [[0,1,1,1],[0,0,1,0],[0,0,1,0],[1,0,1,0],[0,1,0,0]],
-            'K': [[1,0,0,1],[1,0,1,0],[1,1,0,0],[1,0,1,0],[1,0,0,1]],
-            'L': [[1,0,0,0],[1,0,0,0],[1,0,0,0],[1,0,0,0],[1,1,1,1]],
-            'M': [[1,0,0,0,1],[1,1,0,1,1],[1,0,1,0,1],[1,0,0,0,1],[1,0,0,0,1]],
-            'N': [[1,0,0,1],[1,1,0,1],[1,0,1,1],[1,0,0,1],[1,0,0,1]],
-            'O': [[0,1,1,0],[1,0,0,1],[1,0,0,1],[1,0,0,1],[0,1,1,0]],
-            'P': [[1,1,1,0],[1,0,0,1],[1,1,1,0],[1,0,0,0],[1,0,0,0]],
-            'Q': [[0,1,1,0],[1,0,0,1],[1,0,0,1],[1,0,1,1],[0,1,1,1]],
-            'R': [[1,1,1,0],[1,0,0,1],[1,1,1,0],[1,0,1,0],[1,0,0,1]],
-            'S': [[0,1,1,1],[1,0,0,0],[0,1,1,0],[0,0,0,1],[1,1,1,0]],
-            'T': [[1,1,1],[0,1,0],[0,1,0],[0,1,0],[0,1,0]],
-            'U': [[1,0,0,1],[1,0,0,1],[1,0,0,1],[1,0,0,1],[0,1,1,0]],
-            'V': [[1,0,0,0,1],[1,0,0,0,1],[0,1,0,1,0],[0,1,0,1,0],[0,0,1,0,0]],
-            'W': [[1,0,0,0,1],[1,0,0,0,1],[1,0,1,0,1],[1,1,0,1,1],[1,0,0,0,1]],
-            'X': [[1,0,0,0,1],[0,1,0,1,0],[0,0,1,0,0],[0,1,0,1,0],[1,0,0,0,1]],
-            'Y': [[1,0,0,0,1],[0,1,0,1,0],[0,0,1,0,0],[0,0,1,0,0],[0,0,1,0,0]],
-            'Z': [[1,1,1,1,1],[0,0,0,1,0],[0,0,1,0,0],[0,1,0,0,0],[1,1,1,1,1]]
-        };
-    }
-
     applyVerticalPattern() {
-        const vertical = Math.PI / 2;
-        const color = this.hslToHex(120, 12, 90, 1);
-
         this.lines.forEach(line => {
-            line.baseAngle = vertical;
-            line.baseColor = '#d3e0d3';
+            line.baseAngle = Math.PI / 2;
+            line.baseColor = this.lightColor + Util.mapToHex(0.2);
         });
     }
 
     applyWavePattern() {
-        const vertical = Math.PI / 2;
+        const cx = this.cols / 2;
+        const cy = this.rows / 2;
+        const maxDist = Math.sqrt(cx * cx + cy * cy) || 1;
         this.lines.forEach(line => {
             const colNorm = line.col / this.cols;
             const rowNorm = line.row / this.rows;
             const angle = Math.sin(colNorm * Math.PI * 2 + rowNorm * Math.PI) * 0.8;
-            const hue = 200 + colNorm * 100;
-            const op = colNorm;
-            const color = this.hslToHex(120, 12, 90, op);
+            const dx = line.col - cx;
+            const dy = line.row - cy;
+            const distNorm = Math.min(1, Math.max(0, Math.sqrt(dx * dx + dy * dy) / maxDist));
+            const op = (1-distNorm) * 0.5; // opacità cresce verso i bordi
+            const color = this.lightColor + Util.mapToHex(op);
             line.baseAngle = angle;
             line.baseColor = color;
         });
@@ -336,86 +283,18 @@ class MatrixVisualizer {
     applySpiralPattern() {
         const cx = this.cols / 2;
         const cy = this.rows / 2;
+        const maxDist = Math.sqrt(cx * cx + cy * cy) || 1;
         this.lines.forEach(line => {
             const dx = line.col - cx;
             const dy = line.row - cy;
             const dist = Math.sqrt(dx * dx + dy * dy) + 0.0001;
             const angle = Math.atan2(dy, dx) + dist * 0.25;
-            const hue = (dist * 15) % 360;
-            //const color = this.hslToHex(120, 12, 90, 1);
-            const op = Math.abs(hue/360);
-            const color = this.hslToHex(120, 12, 90, op);
+            const distNorm = Math.min(1, Math.max(0, dist / maxDist));
+            const op = (distNorm) * 0.5; // opacità cresce con la distanza dal centro
+            const color = this.lightColor + Util.mapToHex(op);
             line.baseAngle = angle;
             line.baseColor = color;
         });
-    }
-
-    applyLongoPattern() {
-        this.applyVerticalPattern();
-        if(this.canvas.width < 1440){
-            return;
-        }
-
-        const letters = this.getLetterMap();
-        const letterHeight = 5;
-        const spacing = 2;
-        const color = "#8075ff";
-
-        const measureWord = (word) => {
-            let width = 0;
-            for (const ch of word.toUpperCase()) {
-                if (ch === ' ') {
-                    width += 3;
-                    continue;
-                }
-                const letter = letters[ch];
-                if (letter) width += letter[0].length + 2;
-            }
-            return Math.max(width - 2, 0);
-        };
-
-        const word1 = "CONTACT";
-        const word2 = "ME";
-
-        const totalHeight = letterHeight * 2 + spacing;
-        const startRow1 = Math.max(Math.floor((this.rows - totalHeight) / 2), 0);
-        const startRow2 = startRow1 + letterHeight + spacing;
-
-        const startCol1 = Math.max(Math.floor((this.cols - measureWord(word1)) / 2), 0);
-        const startCol2 = Math.max(Math.floor((this.cols - measureWord(word2)) / 2), 0);
-
-        const drawWord = (word, startRow, startCol) => {
-            let currentCol = startCol;
-            for (const ch of word.toUpperCase()) {
-                if (ch === ' ') {
-                    currentCol += 3;
-                    continue;
-                }
-                const letter = letters[ch];
-                if (!letter) continue;
-                for (let r = 0; r < letter.length; r++) {
-                    for (let c = 0; c < letter[r].length; c++) {
-                        if (letter[r][c] === 1) {
-                            const row = startRow + r;
-                            const col = currentCol + c;
-                            if (row >= 0 && row < this.rows && col >= 0 && col < this.cols) {
-                                const index = row * this.cols + col;
-                                const line = this.lines[index];
-                                line.baseColor = color;
-                                line.targetColor = color;
-                                const jitter = (Math.random() - 0.5) * this.chaosAmount;
-                                line.baseAngle = Math.PI / 2.2;
-                                line.targetAngle = Math.PI / 1.8;
-                            }
-                        }
-                    }
-                }
-                currentCol += letter[0].length + 2;
-            }
-        };
-
-        drawWord(word1, startRow1, startCol1);
-        drawWord(word2, startRow2, startCol2);
     }
 
     applyMouseInfluence() {
@@ -451,9 +330,9 @@ class MatrixVisualizer {
                         const maxDistance = radiusGrid * Math.max(this.cellWidth, this.cellHeight);
                         const t = Math.min(distance, maxDistance) / maxDistance; // 0 vicino al mouse, 1 al bordo
                         const hue = Util.mapRange(t, 0, 1, 245, 120); // passa dal viola al verde con la distanza
-                        const highlightColor = this.hslToHex(hue, 70, 60, 1);
-                        line.targetColor = this.lerpColor(line.baseColor, '#8075ff', weight);
-                        //line.targetColor = this.lerpColor('#d3e0d3', '#8075ff', weight);
+                        const highlightColor = Util.hslToHex(hue, 70, 60, 1);
+                        line.targetColor = Util.lerpColor(line.color, this.accentColor, weight);
+                        //line.targetColor = Util.lerpColor('#d3e0d3', this.accentColor, weight);
                     }
                 }
             }
@@ -485,9 +364,9 @@ class MatrixVisualizer {
                     line.targetAngle = line.targetAngle + (tangentAngle - line.targetAngle) * w;
 
                     const hue = (radius / 4) % 360;
-                    const waveColor = this.hslToHex(hue, 80, 70);
-                    //line.targetColor = this.lerpColor(line.targetColor, waveColor, w);
-                    line.targetColor = this.lerpColor(line.baseColor, '#8075ff', 1);
+                    const waveColor = Util.hslToHex(hue, 80, 70);
+                    //line.targetColor = Util.lerpColor(line.targetColor, waveColor, w);
+                    line.targetColor = Util.lerpColor(line.color, this.accentColor, 1);
                 }
             });
         });
@@ -495,24 +374,25 @@ class MatrixVisualizer {
 
     updateLine(line) {
         line.angle += (line.targetAngle - line.angle) * 0.1;
-        line.color = this.lerpColor(line.color, line.targetColor, 0.1);
+        line.color = Util.lerpColor(line.color, line.targetColor, 0.1);
 
-        const chaos = this.chaosAmount;
-        const baseAngle = line.baseAngle;
-        const randomAngle = line.randomAngle;
+        // base + disturbo controllato da chaosAmount
+        const chaoticAngle = line.randomAngle * this.chaosAmount;
+        //line.baseAngle = line.baseAngle + chaoticAngle;
 
-        let angle;
-        if(this.currentPatternName == 'vertical'){
-            angle = baseAngle + (randomAngle - baseAngle) * chaos;
-        }else{
-            angle = baseAngle ;
-        }
-        let color = line.baseColor;
-        line.targetAngle = angle;
-        line.targetColor = color;
-    }
+        // normalizza target per evitare drift
+        //const tau = Math.PI * 2;
+        //if (line.baseAngle > tau) {
+        //    line.baseAngle = line.baseAngle % tau;
+        //} else if (line.baseAngle < -tau) {
+        //    line.baseAngle = -(-line.baseAngle % tau);
+        //}
 
-    drawLine(line) {
+        //line.baseAngle = line.baseAngle + (line.randomAngle - line.baseAngle) * this.chaosAmount*0.01;
+        //let color = line.baseColor;
+        line.targetAngle = line.baseAngle + chaoticAngle;
+        line.targetColor = line.baseColor;
+
         const ctx = this.ctx;
         ctx.save();
         ctx.translate(line.x, line.y);
@@ -533,23 +413,99 @@ class MatrixVisualizer {
 
         const ctx = this.ctx;
         ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        ctx.fillStyle = "#CAD5CA";
+        ctx.fillStyle = this.backgroundColor;
         ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
         const now = performance.now();
 
-
-        this.applyPattern(this.currentPatternName);
-        this.applyMouseInfluence(now);
-        this.applyWaves(now);
+        if (this.currentPatternName !== this.lastPatternApplied) {
+            this.applyPattern(this.currentPatternName);
+            this.lastPatternApplied = this.currentPatternName;
+        }
+            this.applyMouseInfluence(now);
+            this.applyWaves(now);
 
         // update + draw
         this.lines.forEach(line => {
             this.updateLine(line);
-            this.drawLine(line);
         });
     }
 }
 
-const canvas = document.getElementById('matrixCanvas');
-const visualizer = new MatrixVisualizer(canvas);
+class Longo {
+    static init(){
+
+        Longo.sectionChaosSeeds = [];
+        Longo.caosableChaosSeeds = [];
+
+        const canvas = document.getElementById('matrixCanvas');
+        const slider = document.getElementById('chaosSlider');
+
+        Longo.visualizer = new Ui(canvas);
+        Longo.visualizer.chaosAmount = slider.value
+
+        Longo.sliderChange();
+    }
+
+    static sliderChange(){
+        Longo.updateSliderUI();
+    }
+
+    static initChaosSeeds(force = false, sectionList = null, caosableList = null){
+        // genera e memoizza i fattori casuali solo al caricamento per animazioni fluide
+        const sections = sectionList || document.querySelectorAll('.section');
+        const caosables = caosableList || document.querySelectorAll('.k');
+
+        if(force || !Longo.sectionChaosSeeds || Longo.sectionChaosSeeds.length !== sections.length){
+            Longo.sectionChaosSeeds = Array.from(sections).map(() => ({
+                rotateSeed: Util.random(-1,1),
+                scaleSeed: Util.random(0,1)
+            }));
+        }
+
+        if(force || !Longo.caosableChaosSeeds || Longo.caosableChaosSeeds.length !== caosables.length){
+            Longo.caosableChaosSeeds = Array.from(caosables).map(() => ({
+                rotateSeed: Util.random(-1,1),
+                scaleXSeed: Util.random(-1,1),
+                scaleYSeed: Util.random(-1,1),
+                scaleZSeed: Util.random(-1,1)
+            }));
+        }
+    }
+
+    static updateSliderUI(){
+        const slider = document.getElementById('chaosSlider');
+        const fill = document.getElementById('chaosFill');
+
+        let caosableList = document.querySelectorAll('.k');
+        let sectionList = document.querySelectorAll('.section');
+
+        const t = slider.value / slider.max;     // normalizzato 0 → 1
+        fill.style.width = (t * 100) + "%";
+
+        let v = Util.exp(t,5);
+        Longo.visualizer.chaosAmount = parseFloat(v);
+
+        // se chaos = 0, genera nuovi seed per il prossimo trascinamento
+        Longo.initChaosSeeds(t === 0, sectionList, caosableList);
+
+        sectionList.forEach((section, index) => {
+            const seeds = Longo.sectionChaosSeeds[index];
+            let scale = Util.mapRange(v*seeds.scaleSeed, 0,1,1,2);
+            let rotate = Util.mapToDeg(v*seeds.rotateSeed);
+            section.style.transform = `rotate(${rotate}deg) scale(${scale})`;
+        });
+
+        caosableList.forEach((caosable, index) => {
+            const seeds = Longo.caosableChaosSeeds[index];
+            let rotate = Util.mapToDeg(v*seeds.rotateSeed);
+            let scaleX = Util.mapRange(v*seeds.scaleXSeed, -1,1,0.5,1.5);
+            let scaleY = Util.mapRange(v*seeds.scaleYSeed, -1,1,0.5,1.5);
+            let scaleZ = Util.mapRange(v*seeds.scaleZSeed, -1,1,0.5,1.5);
+
+            caosable.style.transform = `rotate(${rotate}deg) scaleZ(${scaleZ}) scaleX(${scaleX}) scaleY(${scaleY})`;
+            //caosable.style.letterSpacing = Util.mapRange(t*Math.random(), 0,1,-10,2) + 'px';
+        });
+    };
+}
+Longo.init();

@@ -15,27 +15,27 @@
         <div class="slider-wrap">
             <div class="slider-label">Chaos</div>
             <div class="slider-track">
-                <input type="range" id="chaosSlider" min="0" max="1" step="0.01" value="0.5">
+                <input type="range" id="chaosSlider" min="0" max="1" step="0.01" value="0.5" oninput="Longo.sliderChange()">
                 <div class="slider-fill" id="chaosFill"></div>
             </div>
         </div>
 
-        <section class="section section-home k" data-pattern="vertical">
+        <section class="section section-home" data-pattern="vertical">
             <div class="container">
                 <div class="text">
-                    <span class="k">I’m fascinated by the</span> <em class="k">early chaos</em> <span class="k">—</span>
+                    <img class="profile-img k" src="img/ettore-longo.jpg" alt="">
+                    <span class="k">I’m fascinated by the</span> <em class="k">early chaos</em> <br><span class="k">—</span>
                     <span class="k">when ideas are fragile,</span> <span class="k">people are bold,</span>
                     <span class="k">and everything still</span> <span class="k">feels possible.</span>
-
                     <div class="text-sign">
-                        <img class="text-img k" src="img/ettore-longo.webp" alt="">
                         <div class="k">Ettore Longo</div>
                     </div>
+
                 </div>
             </div>
         </section>
 
-        <section class="section section-text k" data-pattern="spiral">
+        <section class="section section-text" data-pattern="spiral">
             <div class="container">
                 <div class="section-title">
                     <span class="k">I Like It When Nothing Works (Yet)</span>
@@ -51,20 +51,22 @@
             </div>
         </section>
 
-        <section class="section section-portfolio k" data-pattern="wave">
+        <section class="section section-portfolio" data-pattern="wave">
             <div class="container">
                 <div class="section-title k">
                     My Portfolio
                 </div>
                 <div class="section-text">
-                <span class="k">Discentis</span>
-                <span class="k">An innovative EdTech startup focused on empowering teachers to create real, measurable impact in students’ learning.</span>
-
-                <span class="k"><a href="https://discentis.it">Discentis.it</a></span>
+                    <div class="portfolio">
+                        <span class="portfolio-title k"></span>
+                        <img class="portfolio-img" src="img/discentis.png" alt="">
+                        <span class="k">An innovative EdTech startup focused on empowering teachers to create real, measurable impact in students’ learning.</span>
+                        <a class="portfolio-link k" href="https://discentis.it" target="_blank">discentis.it</a>
+                </div>
                 </div>
             </div>
         </section>
-        <section class="section section-footer k" data-pattern="longo">
+        <section class="section section-footer" data-pattern="vertical">
             <div class="container">
                 <div class="section-title k">
                     <b>Ettore Longo</b>

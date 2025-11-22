@@ -1,9 +1,23 @@
 :root {
     --white: #fff;
     --black: #211A1D;
-    --olive: #CAD5CA;
-    --light-olive: #d4e0d4;
-    --violet: #8075ff;
+
+    /*--background: #CAD5CA;
+    --light: #d4e0d4;
+    --accent: #8075ff;*/
+
+
+    --background: #675867;
+    --light: #6b5d6b;
+    --accent: #cad5ca;
+    --accentLight: #bcc8bc;
+
+    /*
+    back #675867
+    white: #CAD5CA
+    green:
+    */
+
 
     --cubicBezier: cubic-bezier(1.000, 0.000, 0.000, 1.000);
 }
@@ -49,7 +63,6 @@
   src: url('../fonts/space-grotesk-v22-latin-700.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
 
-
 *,*:before,*:after {
 	box-sizing: border-box;
 	margin: 0;
@@ -67,7 +80,8 @@ html {
 
 body {
     font-family: 'Space Grotesk', sans-serif;
-    background-color: var(--olive);
+    background-color: var(--background);
+    color: var(--accent);
     width: 100%;
     overflow-x: hidden;
 }
@@ -78,8 +92,9 @@ h1,h2,h3,h4,p,ul,ol {
 }
 
 a {
-    color: var(--violet);
+    color: var(--accent);
     font-weight: bold;
+    transition: .3s;
 }
 
 ul{
@@ -110,24 +125,27 @@ img {
     pointer-events: none;
 }
 
-svg{
-    font-size: 49px;
-    stroke: #8075ff;
-    stroke-width: 0.1em;
-    stroke-linecap: square;
-    stroke-linejoin: bevel;
-    opacity: undefined;
-    fill: transparent;
-}
-
 .k{
     will-change: transform;
     position: relative;
     display: inline-block;
-    transition: 0.3s;
-    transition-delay: 0.1s;
-
+    background-color: var(--background);
+    color: var(--accent);
 }
+
+.profile-img{
+                    height: 80px;
+                    width: 80px;
+                    margin-right: 16px;
+                    margin-bottom: 16px;
+                    position: relative;
+    top: 16px;
+    z-index: 2;
+
+            max-height: 320px;
+            object-fit: cover;
+            border-radius: 40px;
+                }
 
 .section{
     display: flex;
@@ -136,7 +154,6 @@ svg{
     align-items: center;
     font-size: 1.4rem;
     min-height: 100vh;
-    pointer-events: none;
 
     .container{
         z-index: 10;
@@ -144,19 +161,15 @@ svg{
         flex-direction: column;
         align-items: flex-start;
         padding: 36px 52px;
-
         border-radius: 40px;
-
-        span, em{
-            background-color: var(--olive);
-        }
     }
 
     .section-title{
         font-weight: bold;
+        font-size: 2rem;
         margin-top: 40px;
-        margin-bottom: 16px;
-        background-color: var(--olive);
+        margin-bottom: 40px;
+        background-color: var(--background);
         align-self: flex-start;
     }
 
@@ -170,13 +183,6 @@ svg{
         gap: 32px;
         z-index: 10;
         position: relative;
-        pointer-events: none;
-
-        img{
-            max-height: 400px;
-            object-fit: cover;
-            border-radius: 80px;
-        }
 
         .text{
             max-width: 1200px;
@@ -184,16 +190,18 @@ svg{
             .text-sign{
                 display: flex;
                 align-items: center;
-                justify-self: flex-end;
+                justify-self: flex-start;
+                justify-content: flex-end   ;
                 text-align: right;
                 font-style: italic;
-                font-size: 1.6rem;
+                font-size: 1.2rem;
                 gap: 8px;
-                margin-top: 24px;
+                margin-top: 0px;
+                padding-top: 16px;
+                div{
+                    align-self: flex-end;
 
-                img{
-                    height: 1.6em;
-                    width: 1.6em;
+
                 }
             }
         }
@@ -214,8 +222,28 @@ svg{
 
         .section-title{
             margin-bottom: 0;
+            background-color: var(--accent);
+            color: var(--background);
         }
     }
+}
+
+.portfolio{
+    margin-top: 32px;
+    .portfolio-title {
+        font-weight: bold;
+        z-index: 2;
+        position: relative;
+    }
+    .portfolio-img{
+        max-width: 240px;
+        margin-bottom: 8px;
+            filter: brightness(0) saturate(100%) invert(94%) sepia(10%) saturate(192%) hue-rotate(71deg) brightness(91%) contrast(86%);
+        }
+        .portfolio-link{
+            margin-top: 16px;
+            font-weight: normal;
+        }
 }
 
 .btn {
@@ -257,25 +285,26 @@ svg{
 }
 
 h1{
-    background-color: #8075ff;
+    background-color: var(--light);
     color: var(--white);
     padding: 16px 40px;
 }
 
 em{
-    /*text-decoration: underline;*/
-    color: #8075ff;
+    text-decoration: none;
+    background-color: var(--accent) !important;
+    color: var(--background) !important;
     font-weight: bold;
+    z-index: 2;
+    position: relative;
 }
 
 .slider-wrap {
     width: 300px;
     margin: 20px 0;
     font-size: 1em;
-    color: #444;
-    background:linear-gradient(45deg, var(--violet), var(--olive));
-    color: var(--light-olive);
-    border: 1px solid var(--light-olive);
+    background-color: var(--accent);
+    color: var(--background);
     padding: 12px 32px 20px;
     border-radius: 40px;
     font-size: 1rem;
@@ -285,7 +314,7 @@ em{
     right: 0;
     margin: 0 auto;
     z-index: 1000;
-    box-shadow: 0 0 16px #8075ff3f;
+    box-shadow: 0 0 16px var(--light);
 
     .slider-label {
         display: block;
@@ -299,7 +328,7 @@ em{
         width: 100%;
         height: 8px;
         border-radius: 10px;
-        background-color:var(--light-olive);
+        background-color: var(--accentLight);
     }
 
     .slider-track input[type="range"] {
@@ -321,10 +350,8 @@ em{
         appearance: none;
         width: 24px;
         height: 24px;
-        background: var(--violet);
+        background: var(--background);
         border-radius: 50%;
-        border: 1px solid var(--light-olive);
-        box-shadow: 0 0 8px rgba(128, 117, 255, 0.4);
         background-size: cover;
     }
 
@@ -333,12 +360,11 @@ em{
         top: 0;
         left: 0;
         height: 8px;
-        background: var(--violet);
+        background: var(--background);
         border-radius: 10px;
         z-index: 1;
     }
 }
-
 
 .container {
     max-width: 1200px;
@@ -353,7 +379,6 @@ em{
     width: 100%;
     height: 120%;
     display: block;
-    background: #CAD5CA;
     margin-bottom: 20px;
     z-index: 0;
 }
