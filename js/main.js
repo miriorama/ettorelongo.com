@@ -195,16 +195,22 @@ class Ui {
         window.addEventListener('scroll', () => this.onScroll());
         this.onScroll();
 
-        const evt = ('ontouchstart' in window) ? 'touchstart' : 'click';
-        window.addEventListener(evt, (e) => {
+        const addWave = (clientX, clientY) => {
+            if (clientX == null || clientY == null) return;
             const rect = this.canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            this.waves.push({
-                x,
-                y,
-                start: performance.now()
-            });
+            const x = clientX - rect.left;
+            const y = clientY - rect.top;
+            this.waves.push({ x, y, start: performance.now() });
+        };
+
+        // click/tap compatibile mobile
+        window.addEventListener('pointerdown', (e) => {
+            addWave(e.clientX, e.clientY);
+        });
+        window.addEventListener('touchstart', (e) => {
+            const touch = e.touches && e.touches[0];
+            addWave(touch?.clientX, touch?.clientY);
+            e.preventDefault();
         }, { passive: false });
     }
 
