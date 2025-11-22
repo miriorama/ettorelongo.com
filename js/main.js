@@ -106,10 +106,6 @@ class Ui {
 
         this.waves = []; // {x, y, start}
 
-        //this.backgroundColor = '#CAD5CA';
-        //this.lightColor = "#d3e0d3";
-        //this.accentColor = "#8075ff";
-
         this.backgroundColor = '#675867';
         this.lightColor = "#949194";
         this.accentColor = "#CAD5CA";
@@ -129,7 +125,7 @@ class Ui {
         // chaos & pattern
         this.chaosAmount = 0;       // 0 verticali, 1 casuali
         this.currentPatternName = "vertical";
-        this.lastPatternApplied = "vertical";
+        this.lastPatternApplied = "";
 
         // sezioni per scroll-pattern
         this.sections = Array.from(document.querySelectorAll('.section'));
@@ -147,6 +143,7 @@ class Ui {
         this.canvas.width = this.canvas.offsetWidth;
         this.canvas.height = this.canvas.offsetHeight;
         this.initLines();
+        this.applyPattern(this.currentPatternName)
     }
 
     initLines() {
@@ -173,7 +170,7 @@ class Ui {
                     randomAngle: (Math.random() * (90 * Math.PI / 180)),
                     // colori
                     color: this.backgroundColor,
-                    targetColor: this.backgroundColor,
+                    targetColor: this.lightColor,
                     baseColor: this.backgroundColor
                 });
             }
@@ -244,7 +241,6 @@ class Ui {
 
     // ------ pattern ------
     applyPattern(name) {
-        this.applyVerticalPattern();
         this.currentPatternName = name;
         if (name === "vertical") {
             this.applyVerticalPattern();
