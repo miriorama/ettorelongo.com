@@ -196,7 +196,7 @@ class Ui {
         this.onScroll();
 
         const evt = ('ontouchstart' in window) ? 'touchstart' : 'click';
-        window.addEventListener('click', (e) => {
+        window.addEventListener(evt, (e) => {
             const rect = this.canvas.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
